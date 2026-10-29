@@ -19,7 +19,7 @@ spec:
         existingSecretKey: token
         giteaRootURL: http://192.168.1.254:30080/
         global:
-          storageClass: ''
+          storageClass: local-path
         statefulset:
           timezone: Asia/Seoul
           nodeSelector:
@@ -41,6 +41,7 @@ spec:
             extraVolumeMounts:
             - name: docker-data
               mountPath: /var/lib/docker
+        fullnameOverride: gitea
   destination:
     server: https://kubernetes.default.svc
     namespace: gitea

@@ -40,10 +40,10 @@ spec:
             type: NodePort
             nodePort: 30222
         persistence:
-          storageClass: ''
-          volumeName: gitea-data
+          storageClass: local-path
           size: 10Gi
-          create: false
+          create: true
+          claimName: gitea-data
         preExtraInitContainers:
         - name: volume-permissions
           image: docker.gitea.com/gitea:1.27.0-rootless
