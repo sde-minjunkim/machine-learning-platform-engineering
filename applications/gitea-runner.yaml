@@ -16,13 +16,11 @@ spec:
         enabled: true
         existingSecret: gitea-runner-token
         existingSecretKey: token
-        giteaRootURL: http://192.168.1.254:30080/
+        giteaRootURL: ''
         global:
-          storageClass: local-path
+          storageClass: ''
         statefulset:
-          timezone: Asia/Seoul
-          nodeSelector:
-            kubernetes.io/hostname: debian
+          timezone: ''
           persistence:
             size: 1Gi
           runner:

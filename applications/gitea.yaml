@@ -17,8 +17,6 @@ spec:
         strategy:
           type: Recreate
           rollingUpdate: null
-        nodeSelector:
-          kubernetes.io/hostname: debian
         postgresql-ha:
           enabled: false
         postgresql:
@@ -30,12 +28,12 @@ spec:
         service:
           http:
             type: NodePort
-            nodePort: 30080
+            nodePort: 0
           ssh:
             type: NodePort
-            nodePort: 30222
+            nodePort: 0
         persistence:
-          storageClass: local-path
+          storageClass: ''
           size: 10Gi
           create: true
           claimName: gitea-data
@@ -60,11 +58,11 @@ spec:
                 key: password
           admin:
             existingSecret: gitea-admin
-            email: admin@localhost.localdomain
+            email: ''
           config:
             database:
               DB_TYPE: postgres
-              HOST: gitea-db-rw.gitea.svc.cluster.local:5432
+              HOST: ''
               NAME: gitea
               USER: admin
               SSL_MODE: require
@@ -75,10 +73,10 @@ spec:
             queue:
               TYPE: level
             server:
-              DOMAIN: 192.168.1.254
-              ROOT_URL: http://192.168.1.254:30080/
-              SSH_DOMAIN: 192.168.1.254
-              SSH_PORT: 30222
+              DOMAIN: ''
+              ROOT_URL: ''
+              SSH_DOMAIN: ''
+              SSH_PORT: 0
             actions:
               ENABLED: true
         deployment:
