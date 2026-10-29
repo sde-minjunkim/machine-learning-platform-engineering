@@ -33,7 +33,7 @@ spec:
             tolerations: *id001
   destination:
     server: https://kubernetes.default.svc
-    namespace: local-path-storage
+    namespace: kube-system
   syncPolicy:
     automated:
       prune: false
