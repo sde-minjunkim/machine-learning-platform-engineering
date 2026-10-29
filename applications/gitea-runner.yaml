@@ -16,11 +16,8 @@ spec:
         enabled: true
         existingSecret: gitea-runner-token
         existingSecretKey: token
-        giteaRootURL: ''
-        global:
-          storageClass: ''
+        giteaRootURL: http://gitea-http:3000/
         statefulset:
-          timezone: ''
           persistence:
             size: 1Gi
           runner:

@@ -1,0 +1,88 @@
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: gitea-runner-token
+  namespace: gitea
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: Role
+metadata:
+  name: gitea-runner-token
+  namespace: gitea
+rules:
+- apiGroups: ['']
+  resources: [secrets]
+  resourceNames: [gitea-runner-token]
+  verbs: [get]
+- apiGroups: ['']
+  resources: [secrets]
+  verbs: [create]
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  name: gitea-runner-token
+  namespace: gitea
+subjects:
+- kind: ServiceAccount
+  name: gitea-runner-token
+  namespace: gitea
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: Role
+  name: gitea-runner-token
+---
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: gitea-runner-token
+  namespace: gitea
+spec:
+  backoffLimit: 3
+  template:
+    spec:
+      serviceAccountName: gitea-runner-token
+      restartPolicy: Never
+      containers:
+      - name: generate-token
+        image: python:3.13-alpine
+        command:
+        - python
+        - -c
+        - |
+          import base64
+          import json
+          import secrets
+          import ssl
+          from pathlib import Path
+          from urllib.error import HTTPError
+          from urllib.request import Request, urlopen
+
+          service_account = Path('/var/run/secrets/kubernetes.io/serviceaccount')
+          namespace = service_account.joinpath('namespace').read_text().strip()
+          headers = {
+              'Authorization': 'Bearer ' + service_account.joinpath('token').read_text().strip(),
+              'Content-Type': 'application/json',
+          }
+          context = ssl.create_default_context(cafile=str(service_account / 'ca.crt'))
+          url = f'https://kubernetes.default.svc/api/v1/namespaces/{namespace}/secrets'
+          name = 'gitea-runner-token'
+          try:
+              with urlopen(Request(f'{url}/{name}', headers=headers), context=context, timeout=30) as response:
+                  existing = json.load(response)
+              if not existing.get('data', {}).get('token'):
+                  raise RuntimeError('Existing runner Secret has no token')
+          except HTTPError as error:
+              if error.code != 404:
+                  raise
+              token = secrets.token_hex(20)
+              body = {
+                  'apiVersion': 'v1',
+                  'kind': 'Secret',
+                  'metadata': {'name': name, 'namespace': namespace},
+                  'type': 'Opaque',
+                  'data': {'token': base64.b64encode(token.encode()).decode()},
+              }
+              request = Request(url, data=json.dumps(body).encode(), headers=headers, method='POST')
+              with urlopen(request, context=context, timeout=30):
+                  pass

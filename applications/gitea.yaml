@@ -25,15 +25,7 @@ spec:
           enabled: false
         valkey:
           enabled: false
-        service:
-          http:
-            type: NodePort
-            nodePort: 0
-          ssh:
-            type: NodePort
-            nodePort: 0
         persistence:
-          storageClass: ''
           size: 10Gi
           create: true
           claimName: gitea-data
@@ -58,13 +50,12 @@ spec:
                 key: password
           admin:
             existingSecret: gitea-admin
-            email: ''
           config:
             database:
               DB_TYPE: postgres
-              HOST: ''
+              HOST: gitea-db-rw:5432
               NAME: gitea
-              USER: admin
+              USER: ''
               SSL_MODE: require
             session:
               PROVIDER: memory
@@ -72,11 +63,6 @@ spec:
               ADAPTER: memory
             queue:
               TYPE: level
-            server:
-              DOMAIN: ''
-              ROOT_URL: ''
-              SSH_DOMAIN: ''
-              SSH_PORT: 0
             actions:
               ENABLED: true
         deployment:

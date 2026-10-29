@@ -21,16 +21,15 @@ spec:
           enableSuperuserAccess: false
           storage:
             size: 10Gi
-            storageClass: ''
           initdb:
             database: gitea
-            owner: admin
+            owner: ''
             secret:
               name: gitea-db-credentials
           annotations:
             helm.sh/resource-policy: keep
           roles:
-          - name: admin
+          - name: ''
             ensure: present
             login: true
             passwordSecret:

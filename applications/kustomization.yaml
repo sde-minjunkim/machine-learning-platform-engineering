@@ -5,6 +5,8 @@ resources:
 - gitea-db.yaml
 - gitea.yaml
 - gitea-runner.yaml
+- secrets.yaml
+- runner-token.yaml
 configMapGenerator:
 - name: deployment-environment
   envs:
@@ -16,110 +18,45 @@ replacements:
 - source:
     kind: ConfigMap
     name: deployment-environment
-    fieldPath: data.GITEA_DOMAIN
+    fieldPath: data.ID
   targets:
   - select:
-      kind: Application
-      name: gitea
+      kind: Secret
+      name: gitea-db-credentials
     fieldPaths:
-    - spec.source.helm.valuesObject.gitea.config.server.DOMAIN
-- source:
-    kind: ConfigMap
-    name: deployment-environment
-    fieldPath: data.GITEA_ROOT_URL
-  targets:
-  - select:
-      kind: Application
-      name: gitea
-    fieldPaths:
-    - spec.source.helm.valuesObject.gitea.config.server.ROOT_URL
-  - select:
-      kind: Application
-      name: gitea-runner
-    fieldPaths:
-    - spec.source.helm.valuesObject.giteaRootURL
-- source:
-    kind: ConfigMap
-    name: deployment-environment
-    fieldPath: data.GITEA_SSH_DOMAIN
-  targets:
-  - select:
-      kind: Application
-      name: gitea
-    fieldPaths:
-    - spec.source.helm.valuesObject.gitea.config.server.SSH_DOMAIN
-- source:
-    kind: ConfigMap
-    name: deployment-environment
-    fieldPath: data.GITEA_HTTP_NODE_PORT
-  targets:
-  - select:
-      kind: Application
-      name: gitea
-    fieldPaths:
-    - spec.source.helm.valuesObject.service.http.nodePort
-- source:
-    kind: ConfigMap
-    name: deployment-environment
-    fieldPath: data.GITEA_SSH_PORT
-  targets:
-  - select:
-      kind: Application
-      name: gitea
-    fieldPaths:
-    - spec.source.helm.valuesObject.service.ssh.nodePort
-  - select:
-      kind: Application
-      name: gitea
-    fieldPaths:
-    - spec.source.helm.valuesObject.gitea.config.server.SSH_PORT
-- source:
-    kind: ConfigMap
-    name: deployment-environment
-    fieldPath: data.STORAGE_CLASS
-  targets:
-  - select:
-      kind: Application
-      name: gitea
-    fieldPaths:
-    - spec.source.helm.valuesObject.persistence.storageClass
+    - stringData.username
   - select:
       kind: Application
       name: gitea-db
     fieldPaths:
-    - spec.source.helm.valuesObject.cluster.storage.storageClass
+    - spec.source.helm.valuesObject.cluster.initdb.owner
   - select:
       kind: Application
-      name: gitea-runner
+      name: gitea-db
     fieldPaths:
-    - spec.source.helm.valuesObject.global.storageClass
-- source:
-    kind: ConfigMap
-    name: deployment-environment
-    fieldPath: data.RUNNER_TIMEZONE
-  targets:
-  - select:
-      kind: Application
-      name: gitea-runner
-    fieldPaths:
-    - spec.source.helm.valuesObject.statefulset.timezone
-- source:
-    kind: ConfigMap
-    name: deployment-environment
-    fieldPath: data.GITEA_ADMIN_EMAIL
-  targets:
+    - spec.source.helm.valuesObject.cluster.roles.0.name
   - select:
       kind: Application
       name: gitea
     fieldPaths:
-    - spec.source.helm.valuesObject.gitea.admin.email
+    - spec.source.helm.valuesObject.gitea.config.database.USER
+  - select:
+      kind: Secret
+      name: gitea-admin
+    fieldPaths:
+    - stringData.username
 - source:
     kind: ConfigMap
     name: deployment-environment
-    fieldPath: data.GITEA_DATABASE_HOST
+    fieldPath: data.PW
   targets:
   - select:
-      kind: Application
-      name: gitea
+      kind: Secret
+      name: gitea-db-credentials
     fieldPaths:
-    - spec.source.helm.valuesObject.gitea.config.database.HOST
+    - stringData.password
+  - select:
+      kind: Secret
+      name: gitea-admin
+    fieldPaths:
+    - stringData.password
