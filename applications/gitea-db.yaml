@@ -1,0 +1,54 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: gitea-db
+  namespace: argocd
+  annotations:
+    argocd.argoproj.io/sync-wave: '-20'
+spec:
+  project: default
+  source:
+    repoURL: https://cloudnative-pg.github.io/charts
+    chart: cluster
+    targetRevision: 0.9.0
+    helm:
+      releaseName: gitea-db
+      valuesObject:
+        fullnameOverride: gitea-db
+        version:
+          postgresql: '17'
+        cluster:
+          instances: 1
+          enableSuperuserAccess: false
+          storage:
+            size: 10Gi
+            storageClass: gitea-cnpg-static
+          affinity:
+            nodeSelector:
+              kubernetes.io/hostname: debian
+            tolerations:
+            - key: node-role.kubernetes.io/control-plane
+              operator: Exists
+              effect: NoSchedule
+          initdb:
+            database: gitea
+            owner: admin
+            secret:
+              name: gitea-db-credentials
+          annotations:
+            helm.sh/resource-policy: keep
+          roles:
+          - name: admin
+            ensure: present
+            login: true
+            passwordSecret:
+              name: gitea-db-credentials
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: gitea
+  syncPolicy:
+    automated:
+      prune: false
+      selfHeal: true
+    syncOptions:
+    - CreateNamespace=true
