@@ -1,0 +1,45 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: mlflow-db
+  namespace: argocd
+  annotations: {}
+spec:
+  project: default
+  source:
+    repoURL: https://cloudnative-pg.github.io/charts
+    chart: cluster
+    targetRevision: 0.9.0
+    helm:
+      releaseName: mlflow-db
+      valuesObject:
+        fullnameOverride: mlflow-db
+        version:
+          postgresql: '17'
+        cluster:
+          instances: 1
+          enableSuperuserAccess: false
+          storage:
+            size: 10Gi
+          initdb:
+            database: mlflow
+            owner: ''
+            secret:
+              name: mlflow-db-credentials
+          annotations:
+            helm.sh/resource-policy: keep
+          roles:
+          - name: ''
+            ensure: present
+            login: true
+            passwordSecret:
+              name: mlflow-db-credentials
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: mlflow
+  syncPolicy:
+    automated:
+      prune: false
+      selfHeal: true
+    syncOptions:
+    - CreateNamespace=true

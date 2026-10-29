@@ -1,0 +1,53 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: mlflow
+  namespace: argocd
+  annotations: {}
+spec:
+  project: default
+  source:
+    repoURL: https://community-charts.github.io/helm-charts
+    chart: mlflow
+    targetRevision: 1.11.7
+    helm:
+      releaseName: mlflow
+      valuesObject:
+        backendStore:
+          databaseMigration: true
+          databaseConnectionCheck: true
+          postgres:
+            enabled: true
+            host: mlflow-db-rw
+            database: mlflow
+          existingDatabaseSecret:
+            name: mlflow-db-credentials
+            usernameKey: username
+            passwordKey: password
+        artifactRoot:
+          proxiedArtifactStorage: true
+          s3:
+            enabled: true
+            bucket: mlflow-artifacts
+            existingSecret:
+              name: mlflow-s3-credentials
+              keyOfAccessKeyId: AWS_ACCESS_KEY_ID
+              keyOfSecretAccessKey: AWS_SECRET_ACCESS_KEY
+        extraEnvVars:
+          MLFLOW_S3_ENDPOINT_URL: http://seaweedfs-all-in-one.seaweedfs.svc:8333
+          AWS_DEFAULT_REGION: us-east-1
+        serverAllowedHosts:
+        - localhost:*
+        - 127.0.0.1:*
+        - mlflow
+        - mlflow.mlflow.svc
+        - mlflow.mlflow.svc.cluster.local
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: mlflow
+  syncPolicy:
+    automated:
+      prune: false
+      selfHeal: true
+    syncOptions:
+    - CreateNamespace=true

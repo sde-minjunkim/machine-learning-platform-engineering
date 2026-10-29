@@ -1,0 +1,57 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: seaweedfs
+  namespace: argocd
+  annotations: {}
+spec:
+  project: default
+  source:
+    repoURL: https://seaweedfs.github.io/seaweedfs/helm
+    chart: seaweedfs
+    targetRevision: 4.51.0
+    helm:
+      releaseName: seaweedfs
+      valuesObject:
+        master:
+          enabled: false
+        volume:
+          enabled: false
+        filer:
+          enabled: false
+        allInOne:
+          enabled: true
+          data:
+            type: persistentVolumeClaim
+            size: 10Gi
+          extraArgs:
+          - -master.volumeSizeLimitMB=1024
+          - -volume.max=8
+          s3:
+            enabled: true
+            enableAuth: true
+            createBuckets:
+            - name: mlflow-artifacts
+              anonymousRead: false
+            existingConfigSecret: seaweedfs-s3-config
+          secretExtraEnvironmentVars:
+            AWS_ACCESS_KEY_ID:
+              secretKeyRef:
+                name: seaweedfs-credentials
+                key: AWS_ACCESS_KEY_ID
+            AWS_SECRET_ACCESS_KEY:
+              secretKeyRef:
+                name: seaweedfs-credentials
+                key: AWS_SECRET_ACCESS_KEY
+        s3:
+          enableAuth: true
+          existingConfigSecret: seaweedfs-s3-config
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: seaweedfs
+  syncPolicy:
+    automated:
+      prune: false
+      selfHeal: true
+    syncOptions:
+    - CreateNamespace=true

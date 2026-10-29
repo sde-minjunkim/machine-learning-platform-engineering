@@ -7,6 +7,9 @@ resources:
 - gitea-runner.yaml
 - secrets.yaml
 - runner-token.yaml
+- seaweedfs.yaml
+- mlflow-db.yaml
+- mlflow.yaml
 configMapGenerator:
 - name: deployment-environment
   envs:
@@ -45,6 +48,27 @@ replacements:
       name: gitea-admin
     fieldPaths:
     - stringData.username
+  - select:
+      kind: Secret
+      name: mlflow-db-credentials
+    fieldPaths:
+    - stringData.username
+  - select:
+      kind: Secret
+      name: mlflow-s3-credentials
+    fieldPaths:
+    - stringData.AWS_ACCESS_KEY_ID
+  - select:
+      kind: Secret
+      name: seaweedfs-credentials
+    fieldPaths:
+    - stringData.AWS_ACCESS_KEY_ID
+  - select:
+      kind: Application
+      name: mlflow-db
+    fieldPaths:
+    - spec.source.helm.valuesObject.cluster.initdb.owner
+    - spec.source.helm.valuesObject.cluster.roles.0.name
 - source:
     kind: ConfigMap
     name: deployment-environment
@@ -60,3 +84,18 @@ replacements:
       name: gitea-admin
     fieldPaths:
     - stringData.password
+  - select:
+      kind: Secret
+      name: mlflow-db-credentials
+    fieldPaths:
+    - stringData.password
+  - select:
+      kind: Secret
+      name: mlflow-s3-credentials
+    fieldPaths:
+    - stringData.AWS_SECRET_ACCESS_KEY
+  - select:
+      kind: Secret
+      name: seaweedfs-credentials
+    fieldPaths:
+    - stringData.AWS_SECRET_ACCESS_KEY
