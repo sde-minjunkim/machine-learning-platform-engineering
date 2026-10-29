@@ -3,8 +3,7 @@ kind: Application
 metadata:
   name: gitea
   namespace: argocd
-  annotations:
-    argocd.argoproj.io/sync-wave: '-10'
+  annotations: {}
 spec:
   project: default
   source:

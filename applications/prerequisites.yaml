@@ -3,8 +3,7 @@ kind: Application
 metadata:
   name: prerequisites
   namespace: argocd
-  annotations:
-    argocd.argoproj.io/sync-wave: '-40'
+  annotations: {}
 spec:
   project: default
   source:
