@@ -23,10 +23,6 @@ spec:
           timezone: Asia/Seoul
           nodeSelector:
             kubernetes.io/hostname: debian
-          tolerations:
-          - key: node-role.kubernetes.io/control-plane
-            operator: Exists
-            effect: NoSchedule
           persistence:
             size: 1Gi
           runner:
