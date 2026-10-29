@@ -1,0 +1,42 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: local-provisioner
+  namespace: argocd
+  annotations:
+    argocd.argoproj.io/sync-wave: '-50'
+spec:
+  project: default
+  source:
+    repoURL: https://github.com/rancher/local-path-provisioner.git
+    targetRevision: v0.0.37
+    path: deploy/chart/local-path-provisioner
+    helm:
+      releaseName: local-provisioner
+      valuesObject:
+        fullnameOverride: local-provisioner
+        storageClass:
+          name: local-path
+          defaultClass: true
+          reclaimPolicy: Retain
+          volumeBindingMode: WaitForFirstConsumer
+        nodeSelector:
+          kubernetes.io/hostname: debian
+        tolerations: &id001
+        - key: node-role.kubernetes.io/control-plane
+          operator: Exists
+          effect: NoSchedule
+        helperImage:
+          tag: 1.38.0
+        configmap:
+          helperPod:
+            tolerations: *id001
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: local-path-storage
+  syncPolicy:
+    automated:
+      prune: false
+      selfHeal: true
+    syncOptions:
+    - CreateNamespace=true
