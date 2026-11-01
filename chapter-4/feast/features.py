@@ -10,19 +10,19 @@ S3_ENDPOINT = os.environ["AWS_ENDPOINT_URL"]
 
 demo_features_parquet_file_source = FileSource(
     file_format=ParquetFormat(),
-    path="s3://feature-data-sets/demographic_features.parquet",
+    path="s3://mlflow-datasets/feast/feature_data/demographic_features.parquet",
     s3_endpoint_override=S3_ENDPOINT,
 )
 
 relationship_features_parquet_file_source = FileSource(
     file_format=ParquetFormat(),
-    path="s3://feature-data-sets/relationship_features.parquet",
+    path="s3://mlflow-datasets/feast/feature_data/relationship_features.parquet",
     s3_endpoint_override=S3_ENDPOINT,
 )
 
 occupational_features_parquet_file_source = FileSource(
     file_format=ParquetFormat(),
-    path="s3://feature-data-sets/occupational_features.parquet",
+    path="s3://mlflow-datasets/feast/feature_data/occupational_features.parquet",
     s3_endpoint_override=S3_ENDPOINT,
 )
 

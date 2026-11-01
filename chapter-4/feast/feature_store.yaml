@@ -1,0 +1,5 @@
+project: my_feature_repo
+registry: s3://mlflow-datasets/feast/registry_local.db
+provider: local
+offline_store:
+  type: file
