@@ -19,6 +19,7 @@ resources:
 - yatai-image-builder-crds.yaml
 - yatai-deployment-crds.yaml
 - yatai-deployment.yaml
+- yatai-image-builder.yaml
 configMapGenerator:
 - name: deployment-environment
   envs:
@@ -83,6 +84,11 @@ replacements:
       name: yatai-s3-credentials
     fieldPaths:
     - stringData.AWS_ACCESS_KEY_ID
+  - select:
+      kind: Application
+      name: yatai-image-builder
+    fieldPaths:
+    - spec.source.helm.valuesObject.dockerRegistry.username
 - source:
     kind: ConfigMap
     name: deployment-environment
@@ -123,3 +129,8 @@ replacements:
       name: yatai-s3-credentials
     fieldPaths:
     - stringData.AWS_SECRET_ACCESS_KEY
+  - select:
+      kind: Secret
+      name: yatai-registry-credentials
+    fieldPaths:
+    - stringData.password

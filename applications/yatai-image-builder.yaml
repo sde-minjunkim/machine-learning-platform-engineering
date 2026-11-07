@@ -1,0 +1,40 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: yatai-image-builder
+  namespace: argocd
+  annotations: {}
+spec:
+  project: default
+  source:
+    repoURL: https://bentoml.github.io/helm-charts
+    chart: yatai-image-builder
+    targetRevision: 3.0.48
+    helm:
+      releaseName: yatai-image-builder
+      valuesObject:
+        yatai:
+          endpoint: http://yatai.yatai-system.svc.cluster.local
+          clusterName: default
+        dockerRegistry:
+          server: gitea-http.gitea.svc.cluster.local:3000
+          inClusterServer: gitea-http.gitea.svc.cluster.local:3000
+          username: ''
+          passwordExistingSecretName: yatai-registry-credentials
+          passwordExistingSecretKey: password
+          secure: false
+          bentoRepositoryName: admin/yatai-bentos
+        internal:
+          disableYataiComponentRegistration: false
+        global:
+          deploymentNamespaces:
+          - yatai
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: yatai-image-builder
+  syncPolicy:
+    automated:
+      prune: false
+      selfHeal: true
+    syncOptions:
+    - CreateNamespace=true

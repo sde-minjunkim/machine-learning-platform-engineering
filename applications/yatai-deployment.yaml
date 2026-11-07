@@ -16,7 +16,7 @@ spec:
         layers:
           network:
             automaticDomainSuffixGeneration: false
-        disableAutomateBentoImageBuilder: true
+        disableAutomateBentoImageBuilder: false
   destination:
     server: https://kubernetes.default.svc
     namespace: yatai-deployment
