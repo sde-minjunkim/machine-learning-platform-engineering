@@ -20,6 +20,7 @@ resources:
 - yatai-deployment-crds.yaml
 - yatai-deployment.yaml
 - yatai-image-builder.yaml
+- yatai-builder-rbac.yaml
 configMapGenerator:
 - name: deployment-environment
   envs:
