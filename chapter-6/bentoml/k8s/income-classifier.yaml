@@ -1,0 +1,39 @@
+apiVersion: resources.yatai.ai/v1alpha1
+kind: BentoRequest
+metadata:
+  name: income-classifier-service
+  namespace: yatai
+spec:
+  bentoTag: income_classifier_service:thd727w2xcuwzws5
+---
+apiVersion: serving.yatai.ai/v2alpha1
+kind: BentoDeployment
+metadata:
+  name: income-classifier-service
+  namespace: yatai
+spec:
+  bento: income-classifier-service
+  ingress:
+    enabled: false
+  autoscaling:
+    minReplicas: 1
+    maxReplicas: 2
+  resources:
+    requests:
+      cpu: 500m
+      memory: 500Mi
+    limits:
+      cpu: 1000m
+      memory: 1024Mi
+  runners:
+  - name: random-forest-classifier
+    autoscaling:
+      minReplicas: 1
+      maxReplicas: 2
+    resources:
+      requests:
+        cpu: 500m
+        memory: 500Mi
+      limits:
+        cpu: 1000m
+        memory: 1024Mi

@@ -29,6 +29,8 @@ spec:
         global:
           deploymentNamespaces:
           - yatai
+          - yatai-system
+          - yatai-image-builder
           s3:
             endpoint: seaweedfs-all-in-one.seaweedfs.svc.cluster.local:8333
             secure: false
