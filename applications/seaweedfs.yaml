@@ -26,13 +26,10 @@ spec:
             size: 10Gi
           extraArgs:
           - -master.volumeSizeLimitMB=1024
-          - -volume.max=8
+          - -volume.max=20
           s3:
             enabled: true
             enableAuth: true
-            createBuckets:
-            - name: mlflow-artifacts
-              anonymousRead: false
             existingConfigSecret: seaweedfs-s3-config
           secretExtraEnvironmentVars:
             AWS_ACCESS_KEY_ID:
