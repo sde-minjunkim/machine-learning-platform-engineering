@@ -13,6 +13,8 @@ resources:
 - valkey.yaml
 - kfp-cluster.yaml
 - kfp.yaml
+- yatai-db.yaml
+- yatai.yaml
 configMapGenerator:
 - name: deployment-environment
   envs:
@@ -72,6 +74,11 @@ replacements:
     fieldPaths:
     - spec.source.helm.valuesObject.cluster.initdb.owner
     - spec.source.helm.valuesObject.cluster.roles.0.name
+  - select:
+      kind: Secret
+      name: yatai-s3-credentials
+    fieldPaths:
+    - stringData.AWS_ACCESS_KEY_ID
 - source:
     kind: ConfigMap
     name: deployment-environment
@@ -100,5 +107,15 @@ replacements:
   - select:
       kind: Secret
       name: seaweedfs-credentials
+    fieldPaths:
+    - stringData.AWS_SECRET_ACCESS_KEY
+  - select:
+      kind: Secret
+      name: yatai-db-credentials
+    fieldPaths:
+    - stringData.password
+  - select:
+      kind: Secret
+      name: yatai-s3-credentials
     fieldPaths:
     - stringData.AWS_SECRET_ACCESS_KEY

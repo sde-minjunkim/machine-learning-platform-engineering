@@ -1,0 +1,45 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: yatai-db
+  namespace: argocd
+  annotations: {}
+spec:
+  project: default
+  source:
+    repoURL: https://cloudnative-pg.github.io/charts
+    chart: cluster
+    targetRevision: 0.9.0
+    helm:
+      releaseName: yatai-db
+      valuesObject:
+        fullnameOverride: yatai-db
+        version:
+          postgresql: '17'
+        cluster:
+          instances: 1
+          enableSuperuserAccess: false
+          storage:
+            size: 10Gi
+          initdb:
+            database: yatai
+            owner: yatai
+            secret:
+              name: yatai-db-credentials
+          annotations:
+            helm.sh/resource-policy: keep
+          roles:
+          - name: yatai
+            ensure: present
+            login: true
+            passwordSecret:
+              name: yatai-db-credentials
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: yatai-system
+  syncPolicy:
+    automated:
+      prune: false
+      selfHeal: true
+    syncOptions:
+    - CreateNamespace=true

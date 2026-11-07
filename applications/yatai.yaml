@@ -1,0 +1,41 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: yatai
+  namespace: argocd
+  annotations: {}
+spec:
+  project: default
+  source:
+    repoURL: https://bentoml.github.io/helm-charts
+    chart: yatai
+    targetRevision: 1.1.13
+    helm:
+      releaseName: yatai
+      valuesObject:
+        postgresql:
+          host: yatai-db-rw.yatai-system.svc.cluster.local
+          user: yatai
+          database: yatai
+          passwordExistingSecretName: yatai-db-credentials
+          passwordExistingSecretKey: password
+        s3:
+          endpoint: seaweedfs-all-in-one.seaweedfs.svc.cluster.local:8333
+          region: us-east-1
+          bucketName: yatai
+          secure: false
+          accessKeyExistingSecretName: yatai-s3-credentials
+          accessKeyExistingSecretKey: AWS_ACCESS_KEY_ID
+          secretKeyExistingSecretName: yatai-s3-credentials
+          secretKeyExistingSecretKey: AWS_SECRET_ACCESS_KEY
+        ingress:
+          enabled: false
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: yatai-system
+  syncPolicy:
+    automated:
+      prune: false
+      selfHeal: true
+    syncOptions:
+    - CreateNamespace=true
