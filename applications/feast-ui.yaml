@@ -26,7 +26,7 @@ spec:
         - --port
         - '8888'
         # Same configuration as chapter-4/feast/feature_store.yaml.
-        feature_store_yaml_base64: cHJvamVjdDogbXlfZmVhdHVyZV9yZXBvCnJlZ2lzdHJ5OiBzMzovL21sZmxvdy1kYXRhc2V0cy9mZWFzdC9yZWdpc3RyeV9sb2NhbC5kYgpwcm92aWRlcjogbG9jYWwKb2ZmbGluZV9zdG9yZToKICB0eXBlOiBmaWxlCg==
+        feature_store_yaml_base64: cHJvamVjdDogbXlfZmVhdHVyZV9yZXBvCnJlZ2lzdHJ5OiBzMzovL21sZmxvdy1kYXRhc2V0cy9mZWFzdC9yZWdpc3RyeV9sb2NhbC5kYgpwcm92aWRlcjogbG9jYWwKb2ZmbGluZV9zdG9yZToKICB0eXBlOiBmaWxlCm9ubGluZV9zdG9yZToKICB0eXBlOiByZWRpcwogIGNvbm5lY3Rpb25fc3RyaW5nOiB2YWxrZXkudmFsa2V5LnN2Yzo2Mzc5Cg==
         extraEnvs:
         - name: FEAST_S3_ENDPOINT_URL
           value: http://seaweedfs-all-in-one.seaweedfs.svc:8333

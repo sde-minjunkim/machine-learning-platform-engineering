@@ -3,3 +3,6 @@ registry: s3://mlflow-datasets/feast/registry_local.db
 provider: local
 offline_store:
   type: file
+online_store:
+  type: redis
+  connection_string: valkey.valkey.svc:6379

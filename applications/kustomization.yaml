@@ -11,6 +11,7 @@ resources:
 - mlflow-db.yaml
 - mlflow.yaml
 - feast-ui.yaml
+- valkey.yaml
 configMapGenerator:
 - name: deployment-environment
   envs:
