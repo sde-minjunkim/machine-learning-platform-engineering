@@ -29,6 +29,12 @@ spec:
         global:
           deploymentNamespaces:
           - yatai
+          s3:
+            endpoint: seaweedfs-all-in-one.seaweedfs.svc.cluster.local:8333
+            secure: false
+            bucketName: yatai
+            accessKeyId: ''
+            secretAccessKey: ''
   destination:
     server: https://kubernetes.default.svc
     namespace: yatai-image-builder

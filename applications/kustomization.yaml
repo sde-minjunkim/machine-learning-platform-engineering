@@ -89,6 +89,11 @@ replacements:
       name: yatai-image-builder
     fieldPaths:
     - spec.source.helm.valuesObject.dockerRegistry.username
+  - select:
+      kind: Application
+      name: yatai-image-builder
+    fieldPaths:
+    - spec.source.helm.valuesObject.global.s3.accessKeyId
 - source:
     kind: ConfigMap
     name: deployment-environment
@@ -134,3 +139,8 @@ replacements:
       name: yatai-registry-credentials
     fieldPaths:
     - stringData.password
+  - select:
+      kind: Application
+      name: yatai-image-builder
+    fieldPaths:
+    - spec.source.helm.valuesObject.global.s3.secretAccessKey
