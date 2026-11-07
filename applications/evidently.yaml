@@ -1,0 +1,26 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: evidently
+  namespace: argocd
+  annotations: {}
+spec:
+  project: default
+  source:
+    repoURL: https://github.com/sde-minjunkim/machine-learning-platform-engineering
+    targetRevision: main
+    path: applications/charts/evidently
+    helm:
+      releaseName: evidently
+      valuesObject:
+        image: evidently/evidently-service:0.5.0
+        storage: 10Gi
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: evidently
+  syncPolicy:
+    automated:
+      prune: false
+      selfHeal: true
+    syncOptions:
+    - CreateNamespace=true

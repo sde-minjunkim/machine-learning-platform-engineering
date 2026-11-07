@@ -1,0 +1,2 @@
+image: evidently/evidently-service:0.5.0
+storage: 10Gi
