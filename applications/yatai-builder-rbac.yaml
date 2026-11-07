@@ -4,9 +4,28 @@ metadata:
   name: yatai-image-builder-secret-cache
   namespace: yatai-system
 rules:
-- apiGroups: ['']
-  resources: [secrets]
-  verbs: [list, watch]
+- apiGroups:
+  - ''
+  resources:
+  - secrets
+  verbs:
+  - list
+  - watch
+- apiGroups:
+  - resources.yatai.ai
+  resources:
+  - bentoes
+  - bentorequests
+  verbs:
+  - list
+  - watch
+- apiGroups:
+  - batch
+  resources:
+  - jobs
+  verbs:
+  - list
+  - watch
 ---
 apiVersion: rbac.authorization.k8s.io/v1
 kind: RoleBinding
