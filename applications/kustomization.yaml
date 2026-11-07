@@ -11,6 +11,8 @@ resources:
 - mlflow-db.yaml
 - mlflow.yaml
 - valkey.yaml
+- kfp-cluster.yaml
+- kfp.yaml
 configMapGenerator:
 - name: deployment-environment
   envs:

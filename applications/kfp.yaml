@@ -1,0 +1,49 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: kfp
+  namespace: argocd
+  annotations:
+    argocd.argoproj.io/sync-wave: '0'
+spec:
+  project: default
+  source:
+    repoURL: https://github.com/kubeflow/pipelines.git
+    targetRevision: 2.18.0
+    path: manifests/kustomize/env/platform-agnostic-postgresql
+    kustomize:
+      patches:
+      - target:
+          kind: ConfigMap
+          name: pipeline-install-config
+        patch: |-
+          - op: replace
+            path: /data/postgresExtraParams
+            value: '{"sslmode":"disable"}'
+          - op: replace
+            path: /data/dbType
+            value: postgres
+          - op: remove
+            path: /data/mysqlHost
+          - op: remove
+            path: /data/mysqlPort
+      - target:
+          kind: Secret
+          name: mysql-secret
+        patch: |-
+          $patch: delete
+          apiVersion: v1
+          kind: Secret
+          metadata:
+            name: mysql-secret
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: kubeflow
+  syncPolicy:
+    automated:
+      prune: false
+      selfHeal: true
+    syncOptions:
+    - CreateNamespace=true
+    - ServerSideApply=true
+    - SkipDryRunOnMissingResource=true
