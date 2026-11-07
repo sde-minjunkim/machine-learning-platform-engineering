@@ -35,3 +35,4 @@ spec:
     namespace: yatai-deployment
     jsonPointers:
     - /data/YATAI_API_TOKEN
+    - /stringData/YATAI_API_TOKEN

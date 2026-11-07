@@ -54,3 +54,4 @@ spec:
     namespace: yatai-image-builder
     jsonPointers:
     - /data/YATAI_API_TOKEN
+    - /stringData/YATAI_API_TOKEN
