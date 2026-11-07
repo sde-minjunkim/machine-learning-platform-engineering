@@ -26,3 +26,11 @@ spec:
       selfHeal: true
     syncOptions:
     - CreateNamespace=true
+    - RespectIgnoreDifferences=true
+  ignoreDifferences:
+  - group: ''
+    kind: Secret
+    name: yatai-deployment-env
+    namespace: yatai-deployment
+    jsonPointers:
+    - /data/YATAI_API_TOKEN

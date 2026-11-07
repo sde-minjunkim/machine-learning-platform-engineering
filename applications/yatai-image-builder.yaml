@@ -46,3 +46,11 @@ spec:
       selfHeal: true
     syncOptions:
     - CreateNamespace=true
+    - RespectIgnoreDifferences=true
+  ignoreDifferences:
+  - group: ''
+    kind: Secret
+    name: yatai-image-builder-env
+    namespace: yatai-image-builder
+    jsonPointers:
+    - /data/YATAI_API_TOKEN
