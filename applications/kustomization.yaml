@@ -15,6 +15,10 @@ resources:
 - kfp.yaml
 - yatai-db.yaml
 - yatai.yaml
+- cert-manager.yaml
+- yatai-image-builder-crds.yaml
+- yatai-deployment-crds.yaml
+- yatai-deployment.yaml
 configMapGenerator:
 - name: deployment-environment
   envs:

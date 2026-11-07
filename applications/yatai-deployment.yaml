@@ -1,0 +1,28 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: yatai-deployment
+  namespace: argocd
+  annotations: {}
+spec:
+  project: default
+  source:
+    repoURL: https://bentoml.github.io/helm-charts
+    chart: yatai-deployment
+    targetRevision: 1.1.21
+    helm:
+      releaseName: yatai-deployment
+      valuesObject:
+        layers:
+          network:
+            automaticDomainSuffixGeneration: false
+        disableAutomateBentoImageBuilder: true
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: yatai-deployment
+  syncPolicy:
+    automated:
+      prune: false
+      selfHeal: true
+    syncOptions:
+    - CreateNamespace=true

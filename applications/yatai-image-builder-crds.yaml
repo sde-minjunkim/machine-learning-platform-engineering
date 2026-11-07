@@ -1,0 +1,25 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: yatai-image-builder-crds
+  namespace: argocd
+  annotations: {}
+spec:
+  project: default
+  source:
+    repoURL: https://bentoml.github.io/helm-charts
+    chart: yatai-image-builder-crds
+    targetRevision: 3.0.48
+    helm:
+      releaseName: yatai-image-builder-crds
+      valuesObject: {}
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: yatai-system
+  syncPolicy:
+    automated:
+      prune: false
+      selfHeal: true
+    syncOptions:
+    - CreateNamespace=true
+    - ServerSideApply=true
