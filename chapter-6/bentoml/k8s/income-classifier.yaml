@@ -5,7 +5,7 @@ metadata:
   namespace: yatai
 spec:
   bentoTag: income_classifier_service:thd727w2xcuwzws5
-  image: gitea-http.gitea.svc.cluster.local:3000/admin/income-classifier:runtime-config
+  image: gitea-http.gitea.svc.cluster.local:3000/admin/income-classifier:runtime-secret
 ---
 apiVersion: serving.yatai.ai/v2alpha1
 kind: BentoDeployment
@@ -38,34 +38,22 @@ spec:
       limits:
         cpu: 1000m
         memory: 1024Mi
-  envs:
-  - name: PROJECT_ENV
-    valueFrom:
-      secretKeyRef:
-        name: income-classifier-env
-        key: project.env
-  - name: AWS_ACCESS_KEY_ID
-    valueFrom:
-      secretKeyRef:
-        name: income-classifier-env
-        key: AWS_ACCESS_KEY_ID
-  - name: AWS_SECRET_ACCESS_KEY
-    valueFrom:
-      secretKeyRef:
-        name: income-classifier-env
-        key: AWS_SECRET_ACCESS_KEY
-  - name: AWS_ENDPOINT_URL
-    valueFrom:
-      secretKeyRef:
-        name: income-classifier-env
-        key: AWS_ENDPOINT_URL
-  - name: MLFLOW_S3_ENDPOINT_URL
-    valueFrom:
-      secretKeyRef:
-        name: income-classifier-env
-        key: MLFLOW_S3_ENDPOINT_URL
-  - name: AWS_DEFAULT_REGION
-    valueFrom:
-      secretKeyRef:
-        name: income-classifier-env
-        key: AWS_DEFAULT_REGION
+  extraPodSpec:
+    containers:
+    - name: runtime-settings
+      image: gitea-http.gitea.svc.cluster.local:3000/admin/income-classifier:runtime-secret
+      command:
+      - python
+      - -c
+      - import os,time; from pathlib import Path; p=Path("/dev/shm/runtime.env.tmp");
+        p.write_text(os.environ["PROJECT_ENV"]); p.chmod(0o600); p.rename("/dev/shm/runtime.env");
+        time.sleep(2147483647)
+      env:
+      - name: PROJECT_ENV
+        valueFrom:
+          secretKeyRef:
+            name: income-classifier-env
+            key: project.env
+      volumeMounts:
+      - name: shared-memory
+        mountPath: /dev/shm

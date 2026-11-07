@@ -4,5 +4,11 @@ from pathlib import Path
 p = Path('/home/bentoml/bento/src/service.py')
 s = p.read_text()
 assert 'dotenv_values(ENV_FILE_NAME)' in s
-p.write_text(s.replace('dotenv_values(ENV_FILE_NAME)', 'dotenv_values(stream=__import__("io").StringIO(os.environ["PROJECT_ENV"]))'))
+s = s.replace('    config = dotenv_values(ENV_FILE_NAME)', '''    from pathlib import Path
+    import time
+    while not Path('/dev/shm/runtime.env').is_file():
+        time.sleep(0.2)
+    config = dotenv_values('/dev/shm/runtime.env')
+    os.environ.update({k: v for k, v in config.items() if v is not None})''')
+p.write_text(s)
 PY
