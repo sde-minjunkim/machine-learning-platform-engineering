@@ -1,0 +1,18 @@
+service: "service_with_drift_detection:svc"
+labels:
+  owner: ml-engineering-team
+include:
+  - "service_with_drift_detection.py"
+  - "production.env"
+  - "src/*.py"
+  - "requirements_with_drift.txt"
+  - "data_drift.py"
+  - "evidently_reports.py"
+  - "*.env"
+python:
+  requirements_txt: requirements_with_drift.txt
+docker:
+  env:
+    - ENV_NAME=local
+    - AWS_ACCESS_KEY_ID=minio
+    - AWS_SECRET_ACCESS_KEY=minio123

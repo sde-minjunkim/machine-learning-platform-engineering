@@ -1,0 +1,50 @@
+name: detect_drift
+description: Detect data drift in inference data
+inputs:
+- name: model_name
+  type: STRING
+- name: model_stage
+  type: STRING
+- name: mlflow_host
+  type: STRING
+- name: minio_host
+  type: STRING
+- name: access_key
+  type: STRING
+- name: secret_key
+  type: STRING
+- name: reference_dataset_name
+  type: STRING
+- name: feature_dataset_path
+  type: Artifact  # Replacing OutputPath with Artifact
+- name: evidently_workspace_url
+  type: STRING
+- name: evidently_ui_project_name
+  type: STRING
+
+implementation:
+  container:
+    image: 'varunmallya/detect-drift:latest'
+    command:
+    - python3
+    - /app/src/detect_drift/detect_drift.py
+    - --model_name
+    - {inputValue: model_name}
+    - --model_stage
+    - {inputValue: model_stage}
+    - --mlflow_host
+    - {inputValue: mlflow_host}
+    - --minio_host
+    - {inputValue: minio_host}
+    - --access_key
+    - {inputValue: access_key}
+    - --secret_key
+    - {inputValue: secret_key}
+    - --reference_dataset_name
+    - {inputValue: reference_dataset_name}
+    - --feature_dataset_path
+    - {inputPath: feature_dataset_path}
+    - --evidently_workspace_url
+    - {inputValue: evidently_workspace_url}
+    - --evidently_ui_project_name
+    - {inputValue: evidently_ui_project_name}

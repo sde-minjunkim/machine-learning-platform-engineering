@@ -1,0 +1,22 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: feast-job
+spec:
+  template:
+    spec:
+      containers:
+      - name: feast-container
+        image: varunmallya/feast-job:v2  # Replace with your actual Docker image
+        command: ["feast", "apply"]
+        env:  # Adding environment variables
+        - name: AWS_SECRET_ACCESS_KEY  # Replace with your environment variable name
+          value: "minio123"  
+        - name: AWS_ACCESS_KEY_ID  # Replace with your environment variable name
+          value: "minio"  
+        - name: FEAST_S3_ENDPOINT_URL  # Replace with your environment variable name
+          value: "http://minio-service.kubeflow.svc.cluster.local:9000"  
+        - name: AWS_ENDPOINT_URL  # Replace with your environment variable name
+          value: "http://minio-service.kubeflow.svc.cluster.local:9000"  
+      restartPolicy: Never
+  backoffLimit: 4

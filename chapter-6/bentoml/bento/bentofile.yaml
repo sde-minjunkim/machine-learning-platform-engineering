@@ -1,0 +1,16 @@
+service: "service:svc"
+labels:
+  owner: ml-engineering-team
+include:
+  - "service.py"
+  - "production.env"
+  - "src/*.py"
+  - "requirements.txt"
+  - "*.env"
+python:
+  requirements_txt: requirements.txt
+docker:
+  env:
+    - ENV_NAME=local
+    - AWS_ACCESS_KEY_ID=minio
+    - AWS_SECRET_ACCESS_KEY=minio123

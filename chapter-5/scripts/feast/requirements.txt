@@ -1,0 +1,5 @@
+s3fs==2024.10.0
+boto3==1.35.36
+fsspec==2024.10.0
+aiobotocore==2.15.2
+feast[redis]==0.40.1
