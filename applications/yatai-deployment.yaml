@@ -16,6 +16,7 @@ spec:
         layers:
           network:
             automaticDomainSuffixGeneration: false
+            domainSuffix: yatai.svc.cluster.local
         disableAutomateBentoImageBuilder: false
   destination:
     server: https://kubernetes.default.svc
