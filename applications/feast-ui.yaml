@@ -1,0 +1,58 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: feast-ui
+  namespace: argocd
+  annotations: {}
+spec:
+  project: default
+  source:
+    repoURL: https://feast-helm-charts.storage.googleapis.com
+    chart: feast-feature-server
+    targetRevision: 0.67.0
+    helm:
+      releaseName: feast-ui
+      valuesObject:
+        fullnameOverride: feast-ui
+        feast_mode: ui
+        image:
+          repository: feastdev/feature-server
+          tag: 0.40.1
+        commandArgs:
+        - feast
+        - ui
+        - --host
+        - 0.0.0.0
+        - --port
+        - '8888'
+        # Same configuration as chapter-4/feast/feature_store.yaml.
+        feature_store_yaml_base64: cHJvamVjdDogbXlfZmVhdHVyZV9yZXBvCnJlZ2lzdHJ5OiBzMzovL21sZmxvdy1kYXRhc2V0cy9mZWFzdC9yZWdpc3RyeV9sb2NhbC5kYgpwcm92aWRlcjogbG9jYWwKb2ZmbGluZV9zdG9yZToKICB0eXBlOiBmaWxlCg==
+        extraEnvs:
+        - name: FEAST_S3_ENDPOINT_URL
+          value: http://seaweedfs-all-in-one.seaweedfs.svc:8333
+        - name: AWS_ENDPOINT_URL
+          value: http://seaweedfs-all-in-one.seaweedfs.svc:8333
+        - name: AWS_DEFAULT_REGION
+          value: us-east-1
+        - name: AWS_ACCESS_KEY_ID
+          valueFrom:
+            secretKeyRef:
+              name: feast-s3-credentials
+              key: AWS_ACCESS_KEY_ID
+        - name: AWS_SECRET_ACCESS_KEY
+          valueFrom:
+            secretKeyRef:
+              name: feast-s3-credentials
+              key: AWS_SECRET_ACCESS_KEY
+        service:
+          type: ClusterIP
+          port: 80
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: feast
+  syncPolicy:
+    automated:
+      prune: false
+      selfHeal: true
+    syncOptions:
+    - CreateNamespace=true

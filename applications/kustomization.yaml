@@ -10,6 +10,7 @@ resources:
 - seaweedfs.yaml
 - mlflow-db.yaml
 - mlflow.yaml
+- feast-ui.yaml
 configMapGenerator:
 - name: deployment-environment
   envs:
@@ -64,6 +65,11 @@ replacements:
     fieldPaths:
     - stringData.AWS_ACCESS_KEY_ID
   - select:
+      kind: Secret
+      name: feast-s3-credentials
+    fieldPaths:
+    - stringData.AWS_ACCESS_KEY_ID
+  - select:
       kind: Application
       name: mlflow-db
     fieldPaths:
@@ -97,5 +103,10 @@ replacements:
   - select:
       kind: Secret
       name: seaweedfs-credentials
+    fieldPaths:
+    - stringData.AWS_SECRET_ACCESS_KEY
+  - select:
+      kind: Secret
+      name: feast-s3-credentials
     fieldPaths:
     - stringData.AWS_SECRET_ACCESS_KEY
