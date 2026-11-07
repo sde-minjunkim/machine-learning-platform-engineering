@@ -1,0 +1,8 @@
+FROM gitea-http.gitea.svc.cluster.local:3000/admin/yatai-bentos:yatai.income_classifier_service.thd727w2xcuwzws5
+RUN python - <<'PY'
+from pathlib import Path
+p = Path('/home/bentoml/bento/src/service.py')
+s = p.read_text()
+assert 'dotenv_values(ENV_FILE_NAME)' in s
+p.write_text(s.replace('dotenv_values(ENV_FILE_NAME)', 'dotenv_values(stream=__import__("io").StringIO(os.environ["PROJECT_ENV"]))'))
+PY

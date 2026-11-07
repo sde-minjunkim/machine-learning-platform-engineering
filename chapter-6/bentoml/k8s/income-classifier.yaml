@@ -5,6 +5,7 @@ metadata:
   namespace: yatai
 spec:
   bentoTag: income_classifier_service:thd727w2xcuwzws5
+  image: gitea-http.gitea.svc.cluster.local:3000/admin/income-classifier:runtime-config
 ---
 apiVersion: serving.yatai.ai/v2alpha1
 kind: BentoDeployment
@@ -68,12 +69,3 @@ spec:
       secretKeyRef:
         name: income-classifier-env
         key: AWS_DEFAULT_REGION
-  extraPodSpec:
-    containers:
-    - name: main
-      command:
-      - sh
-      - -c
-      - python -c 'import os; from pathlib import Path; Path("/home/bentoml/.env").write_text(os.environ["PROJECT_ENV"])'
-        && exec sh -c "$1"
-      - --
