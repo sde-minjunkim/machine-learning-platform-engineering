@@ -26,7 +26,7 @@ spec:
             size: 10Gi
           extraArgs:
           - -master.volumeSizeLimitMB=1024
-          - -volume.max=20
+          - -volume.max=30
           s3:
             enabled: true
             enableAuth: true
