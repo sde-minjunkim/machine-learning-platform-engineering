@@ -1,0 +1,59 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ .Release.Name }}
+spec:
+  replicas: 1
+  strategy:
+    type: Recreate
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: {{ .Release.Name }}
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: {{ .Release.Name }}
+    spec:
+      containers:
+      - name: tensorboard
+        image: {{ .Values.image | quote }}
+        command: [tensorboard]
+        args:
+        - --logdir
+        - {{ .Values.logDirectory | quote }}
+        - --bind_all
+        - --port
+        - "6006"
+        ports:
+        - name: http
+          containerPort: 6006
+        readinessProbe:
+          httpGet:
+            path: /
+            port: http
+          initialDelaySeconds: 5
+          periodSeconds: 5
+        resources:
+          {{- toYaml .Values.resources | nindent 10 }}
+        volumeMounts:
+        - name: training-logs
+          mountPath: /data
+          readOnly: true
+      volumes:
+      - name: training-logs
+        persistentVolumeClaim:
+          claimName: {{ required "existingClaim must name a training PVC" .Values.existingClaim | quote }}
+          readOnly: true
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ .Release.Name }}
+spec:
+  type: ClusterIP
+  selector:
+    app.kubernetes.io/name: {{ .Release.Name }}
+  ports:
+  - name: http
+    port: 6006
+    targetPort: http

@@ -1,0 +1,6 @@
+apiVersion: v2
+name: tensorboard
+description: TensorBoard UI for the chapter 9 training logs
+type: application
+version: 0.1.0
+appVersion: "2.20.0"

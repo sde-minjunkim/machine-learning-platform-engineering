@@ -1,0 +1,24 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: tensorboard
+  namespace: argocd
+spec:
+  project: default
+  source:
+    repoURL: https://github.com/sde-minjunkim/machine-learning-platform-engineering
+    targetRevision: main
+    path: applications/charts/tensorboard
+    helm:
+      releaseName: tensorboard
+      valuesObject:
+        existingClaim: 9f8fff75-01ac-467d-a858-1f9b6486a997-changwon-data
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: kubeflow
+  syncPolicy:
+    automated:
+      prune: false
+      selfHeal: true
+    syncOptions:
+    - CreateNamespace=true

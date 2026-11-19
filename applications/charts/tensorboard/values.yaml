@@ -1,0 +1,10 @@
+image: tensorflow/tensorflow:2.20.0@sha256:6b0a7db409e62b7cf188ce72074c520af3e8c21f6d4d5b206f700520594dfb5a
+existingClaim: ""
+logDirectory: /data/tensorboard
+resources:
+  requests:
+    cpu: 100m
+    memory: 256Mi
+  limits:
+    cpu: "1"
+    memory: 1Gi
