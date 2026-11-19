@@ -1,4 +1,5 @@
-image: tensorflow/tensorflow:2.20.0@sha256:6b0a7db409e62b7cf188ce72074c520af3e8c21f6d4d5b206f700520594dfb5a
+image: gitea-http.gitea.svc.cluster.local:3000/admin/tensorboard:2.20.0@sha256:6d4d160dd2fac0d23f8ac4be9934b77ccb94b4a22335ac7025b8244c271335c1
+imagePullSecret: income-classifier-registry
 existingClaim: ""
 logDirectory: /data/tensorboard
 resources:
