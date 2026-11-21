@@ -1,0 +1,11 @@
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: {{ required "logClaimName must name the shared log PVC" .Values.logClaimName | quote }}
+spec:
+  accessModes:
+  - ReadWriteOnce
+  storageClassName: {{ .Values.logStorageClass | quote }}
+  resources:
+    requests:
+      storage: {{ .Values.logStorageSize | quote }}

@@ -12,7 +12,7 @@ spec:
     helm:
       releaseName: tensorboard
       valuesObject:
-        existingClaim: dbffc4af-3420-4b73-a5dc-dbddbfea274b-changwon-data
+        logClaimName: tensorboard-logs
   destination:
     server: https://kubernetes.default.svc
     namespace: kubeflow

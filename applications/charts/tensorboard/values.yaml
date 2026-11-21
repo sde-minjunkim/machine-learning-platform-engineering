@@ -1,6 +1,8 @@
 image: gitea-http.gitea.svc.cluster.local:3000/admin/tensorboard:2.20.0@sha256:6d4d160dd2fac0d23f8ac4be9934b77ccb94b4a22335ac7025b8244c271335c1
 imagePullSecret: income-classifier-registry
-existingClaim: ""
+logClaimName: tensorboard-logs
+logStorageClass: local-path
+logStorageSize: 1Gi
 logDirectory: /data/tensorboard
 resources:
   requests:

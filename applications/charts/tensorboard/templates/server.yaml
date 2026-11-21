@@ -14,6 +14,8 @@ spec:
       labels:
         app.kubernetes.io/name: {{ .Release.Name }}
     spec:
+      nodeSelector:
+        kubernetes.io/arch: amd64
       imagePullSecrets:
       - name: {{ .Values.imagePullSecret | quote }}
       containers:
@@ -39,12 +41,12 @@ spec:
           {{- toYaml .Values.resources | nindent 10 }}
         volumeMounts:
         - name: training-logs
-          mountPath: /data
+          mountPath: {{ .Values.logDirectory | quote }}
           readOnly: true
       volumes:
       - name: training-logs
         persistentVolumeClaim:
-          claimName: {{ required "existingClaim must name a training PVC" .Values.existingClaim | quote }}
+          claimName: {{ required "logClaimName must name the shared log PVC" .Values.logClaimName | quote }}
           readOnly: true
 ---
 apiVersion: v1
